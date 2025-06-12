@@ -1,0 +1,3 @@
+export CGO_ENABLED=1 # Necessary because of sqlite
+export ENV="" # "LOCAL" | "AZURE"
+export PORT="" # DEFAULT 8080
