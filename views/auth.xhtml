@@ -1,0 +1,9 @@
+{{ define "body" }}
+<form hx-post="/auth">
+	<label for="username_input">Username:</label><br/>
+	<input type="text" id="username_input" name="username" /><br/>
+	<label for="password_input">Password:</label><br/>
+	<input type="password" id="password_input" name="password" /><br/>
+	<input type="submit" value="Sign In" />
+</form>
+{{ end }}

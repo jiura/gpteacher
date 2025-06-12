@@ -1,0 +1,96 @@
+{{ define "body" }}
+<div id="chat-container">
+	<script type="text/javascript">
+		function toggleDarkMode() {
+			document.body.classList.toggle("dark-mode");
+			document.getElementById("chat-container").classList.toggle("dark-mode");
+			document.getElementById("topbar").classList.toggle("dark-mode");
+			document.getElementById("sun-icon").classList.toggle("dark-mode");
+			document.getElementById("moon-icon").classList.toggle("dark-mode");
+			document.getElementById("chat-window").classList.toggle("dark-mode");
+			document.getElementById("input-area").classList.toggle("dark-mode");
+			const messages = document.querySelectorAll(".message");
+			messages.forEach(message => {
+				message.classList.toggle("dark-mode");
+			});
+		}
+	</script>
+
+	<div id="topbar">
+		<button id="dark-mode-toggle" onclick="toggleDarkMode()">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+				<!-- Sun -->
+				<g id="sun-icon" class="icon">
+					<circle cx="12" cy="12" r="5"/>
+					<line x1="12" y1="1" x2="12" y2="3"/>
+					<line x1="12" y1="21" x2="12" y2="23"/>
+					<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+					<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+					<line x1="1" y1="12" x2="3" y2="12"/>
+					<line x1="21" y1="12" x2="23" y2="12"/>
+					<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+					<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+				</g>
+
+				<!-- Moon -->
+				<g id="moon-icon" class="icon">
+					<path d="M21 12.79A9 9 0 1111.21 3a7 7 0 0010.58 9.79z"/>
+				</g>
+			</svg>
+		</button>
+	</div>
+
+	<div id="chat-window">
+		<div class="message user-message">User: Hello!</div>
+		<div class="message bot-message">Bot: Hi there! How can I help you today?</div>
+		{{ range . }}
+		<div class="message {{.Author}}-message">{{.Author}}: {{.Text}}</div>
+		{{ end }}
+	</div>
+
+	<div id="input-area">
+		<input type="text" id="message-input" name="message" placeholder="Type your message here..." />
+		<button id="send-button" hx-post="/" hx-target="#chat-window" hx-swap="beforeend" hx-include="#message-input">Send</button>
+	</div>
+
+	<script>
+		document.getElementById("message-input").addEventListener("keypress", function(event) {
+			if (event.key === "Enter") {
+				event.preventDefault();
+				document.getElementById("send-button").click();
+			}
+		});
+
+		document.getElementById("send-button").addEventListener("htmx:beforeRequest", function(event) {
+			var input_elem = document.getElementById("message-input");
+			var msg = input_elem.value.trim();
+
+			if (msg === "") {
+				event.preventDefault();
+				return;
+			}
+
+			input_elem.value = "";
+
+			var new_div = document.createElement("div");
+			new_div.classList.add("message", "user-message");
+			new_div.textContent = "User: " + msg;
+
+			var chat_window = document.getElementById("chat-window");
+			chat_window.appendChild(new_div);
+
+			if (chat_window.scrollHeight > chat_window.clientHeight) {
+				chat_window.scrollTop = chat_window.scrollHeight;
+			}
+		});
+
+		document.getElementById("send-button").addEventListener("htmx:afterRequest", function(event) {
+			var chat_window = document.getElementById("chat-window");
+
+			if (chat_window.scrollHeight > chat_window.clientHeight) {
+				chat_window.scrollTop = chat_window.scrollHeight;
+			}
+		});
+	</script>
+</div>
+{{ end }}
