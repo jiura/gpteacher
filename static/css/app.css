@@ -27,7 +27,7 @@ body.chat-page {
     body.chat-page #chat-window {
 	display: flex;
 	flex-direction: column;
-	padding: 10px;
+	padding: 10px 25%;
 	overflow-y: auto;
 	border-top: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
@@ -73,7 +73,8 @@ body.chat-page {
 	    }
 
 	body.chat-page .message pre {
-	    white-space: pre-wrap;
+		white-space: pre-wrap;
+		word-wrap: break-word;
 	}
 
     body.chat-page #input-area {
